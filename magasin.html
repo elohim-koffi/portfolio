@@ -91,7 +91,7 @@ function ajouterStock() {
     let existant = stock.find(p => p.nom === nom);
     if (existant) {
         existant.qte += qte;
-        existant.date = getDateHeure(); // Update la date
+        existant.date = getDateHeure();
     } else {
         stock.push({ nom, qte, achat, vente, date: getDateHeure() });
     }
@@ -130,48 +130,22 @@ function vendre() {
 }
 
 function afficher() {
-    // Date du jour
     document.getElementById('dateJour').textContent = new Date().toLocaleDateString('fr-FR');
     
-    // Menu déroulant
     let select = document.getElementById('produitVente');
     select.innerHTML = '<option>-- Choisir un produit --</option>';
     stock.forEach(p => {
         if(p.qte > 0) select.innerHTML += `<option>${p.nom}</option>`;
     });
     
-    // Tableau Stock avec date
     let tableStock = document.getElementById('tableStock');
     tableStock.innerHTML = '<tr><th>Produit</th><th>Stock</th><th>Achat</th><th>Vente</th><th>Ajouté le</th></tr>';
     stock.forEach(p => {
         tableStock.innerHTML += `<tr><td>${p.nom}</td><td>${p.qte}</td><td>${p.achat}</td><td>${p.vente}</td><td>${p.date}</td></tr>`;
     });
     
-    // Tableau Ventes + Calculs
     let tableVentes = document.getElementById('tableVentes');
     tableVentes.innerHTML = '<tr><th>Heure</th><th>Produit</th><th>Qté</th><th>Total</th><th>Bénéfice</th></tr>';
     let caTotal = 0;
     let benefTotal = 0;
-    ventes.forEach(v => {
-        tableVentes.innerHTML += `<tr><td>${v.heure}</td><td>${v.nom}</td><td>${v.qte}</td><td>${v.total}</td><td>${v.benef}</td></tr>`;
-        caTotal += v.total;
-        benefTotal += v.benef;
-    });
-    
-    document.getElementById('ca').textContent = caTotal.toLocaleString('fr-FR');
-    document.getElementById('benef').textContent = benefTotal.toLocaleString('fr-FR');
-}
-
-function resetJour() {
-    if (confirm('Tu veux clôturer la journée ? Ça va effacer l’historique des ventes mais garder le stock.')) {
-        ventes = [];
-        sauvegarder();
-        afficher();
-    }
-}
-
-// Charge tout au démarrage
-afficher();
-</script>
-</body>
-</html>
+    ventes.forEach(v
