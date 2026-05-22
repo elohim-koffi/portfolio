@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Digital Pro - Restaurant</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif;}
+        body {background: #fafafa; color: #222;}
+        .banniere {background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 30px 20px; text-align: center;}
+        .banniere h1 {font-size: 28px; margin-bottom: 8px;}
+        .banniere p {opacity: 0.9; font-size: 15px;}
+        .horaires {background: #fff3cd; color: #856404; padding: 10px; text-align: center; font-size: 14px;}
+        .container {max-width: 600px; margin: 0 auto; padding: 15px;}
+        .categories {display: flex; gap: 10px; overflow-x: auto; padding: 15px 0; margin-bottom: 10px;}
+        .cat-btn {background: white; border: 2px solid #25D366; color: #25D366; padding: 8px 16px; border-radius: 20px; white-space: nowrap; font-weight: 600;}
+        .cat-btn.active {background: #25D366; color: white;}
+        .plat {background: white; border-radius: 15px; margin-bottom: 18px; box-shadow: 0 3px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex;}
+        .plat img {width: 130px; height: 130px; object-fit: cover;}
+        .plat-info {padding: 12px; flex: 1;}
+        .plat-info h3 {font-size: 17px; margin-bottom: 4px;}
+        .plat-info p {color: #666; font-size: 13px; margin-bottom: 8px; line-height: 1.4;}
+        .prix {font-size: 18px; font-weight: bold; color: #25D366; margin-bottom: 10px;}
+        .btn-cmd {background: #25D366; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;}
+        .footer {text-align: center; padding: 40px 15px; color: #888; font-size: 13px; background: white; margin-top: 20px;}
+        .contact {background: white; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: center;}
+        .contact input {padding: 12px; width: 90%; border: 2px solid #ddd; border-radius: 8px; text-align: center; font-size: 16px; margin-bottom: 10px;}
+        .wa-badge {display: inline-block; background: #25D366; color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; margin-top: 10px;}
+    </style>
+</head>
+<body>
+    <div class="banniere">
+        <h1>🍽️ Le Gourmet d’Abidjan</h1>
+        <p>Menu Digital Pro - Commandez en 1 clic</p>
+        <div class="wa-badge">✅ WhatsApp Business Vérifié</div>
+    </div>
+    
+    <div class="horaires">
+        🕒 Ouvert : Lun-Sam 10h à 22h | Livraison Abidjan
+    </div>
+
+    <div class="container">
+        <!-- CONFIG : Numéro WhatsApp -->
+        <div class="contact">
+            <h3>📱 Numéro de commande du resto</h3>
+            <input type="text" id="numWhatsapp" placeholder="22507XXXXXXXX" value="22507XXXXXXXX">
+        </div>
+
+        <!-- Catégories -->
+        <div class="categories">
+            <button class="cat-btn active">Tous</button>
+            <button class="cat-btn">Plats</button>
+            <button class="cat-btn">Grillades</button>
+            <button class="cat-btn">Boissons</button>
+        </div>
+
+        <!-- PLAT 1 -->
+        <div class="plat">
+            <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=300" alt="Choukouya">
+            <div class="plat-info">
+                <h3>Choukouya Royal</h3>
+                <p>Poulet braisé, alloco, attiéké, piment + salade</p>
+                <div class="prix">3.500 FCFA</div>
+                <button class="btn-cmd" onclick="commander('Choukouya Royal', 3500)">Commander</button>
+            </div>
+        </div>
+
+        <!-- PLAT 2 -->
+        <div class="plat">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300" alt="Poisson">
+            <div class="plat-info">
+                <h3>Poisson Braisé Capitaine</h3>
+                <p>Carpe 1kg, attiéké, légumes, sauce claire</p>
+                <div class="prix">5.000 FCFA</div>
+                <button class="btn-cmd" onclick="commander('Poisson Braisé Capitaine', 5000)">Commander</button>
+            </div>
+        </div>
+
+        <!-- PLAT 3 -->
+        <div class="plat">
+            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300" alt="Kedjenou">
+            <div class="plat-info">
+                <h3>Kedjenou de Poulet</h3>
+                <p>Mijoté traditionnel, riz blanc</p>
+                <div class="prix">3.000 FCFA</div>
+                <button class="btn-cmd" onclick="commander('Kedjenou de Poulet', 3000)">Commander</button>
+            </div>
+        </div>
+
+        <!-- PLAT 4 -->
+        <div class="plat">
+            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300" alt="Jus">
+            <div class="plat-info">
+                <h3>Jus Naturel 1L</h3>
+                <p>Bissap, Gingembre ou Tamarin au choix</p>
+                <div class="prix">1.000 FCFA</div>
+                <button class="btn-cmd" onclick="commander('Jus Naturel 1L', 1000)">Commander</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Propulsé par Elohim Digital 🇨🇮<br>
+        Site créé en 24h. Support : WhatsApp
+    </div>
+
+    <script>
+        function commander(nomPlat, prix) {
+            const numero = document.getElementById('numWhatsapp').value.replace(/\s/g, '');
+            if(numero.length < 10){
+                alert('Entre le numéro WhatsApp du resto en haut 👆');
+                return;
+            }
+            const message = `Bonjour 👋 Je passe commande :%0A%0A*${nomPlat}* - ${prix} FCFA%0A%0AMon nom : %0AMon quartier : %0AMerci !`;
+            const url = `https://wa.me/${numero}?text=${message}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
