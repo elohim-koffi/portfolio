@@ -3,163 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion Boisson - Famille Koffi</title>
+    <title>Gestion Cave La Liga - PRO</title>
     <style>
-        body { font-family: Arial; background: #0d1117; color: white; padding: 15px; max-width: 1000px; margin: auto; }
-        h1, h2 { color: #58a6ff; text-align: center; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-        .box { background: #161b22; padding: 15px; border-radius: 8px; border: 1px solid #30363d; }
-        input, select, button { padding: 10px; margin: 5px 0; font-size: 15px; width: 100%; box-sizing: border-box; }
-        button { background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-sell { background: #1f6feb; }
-        .btn-stock { background: #bf8700; }
-        .btn-danger { background: #da3633; }
+        body { font-family: Arial; background: #0f172a; color: white; padding: 20px; max-width: 600px; margin: auto; }
+        h1 { text-align: center; color: #38bdf8; }
+        .card { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; box-sizing: border-box; }
+        button { font-weight: bold; cursor: pointer; }
+        .btn-add { background: #f59e0b; }
+        .btn-sell { background: #3b82f6; }
+        .btn-print { background: #10b981; }
+        .btn-reset { background: #ef4444; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #30363d; padding: 8px; text-align: left; font-size: 14px; }
-        th { background: #21262d; }
-        .alerte { color: #f85149; font-weight: bold; }
-        .ok { color: #3fb950; font-weight: bold; }
-        .total-box { font-size: 20px; text-align: center; margin: 15px 0; }
-        @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+        th, td { border: 1px solid #334155; padding: 8px; text-align: center; font-size: 14px; }
+        .stats { font-size: 18px; text-align: center; }
+        @media print {
+            body { background: white; color: black; }
+            .no-print { display: none; }
+            .card { border: 1px solid #000; }
+        }
     </style>
 </head>
 <body>
-    <h1>🥤 GESTION MAGASIN BOISSON</h1>
-    <p style="text-align: center;">Par Koffi Kouadio - Solution pour PME</p>
+    <h1>🥤 GESTION CAVE LA LIGA PRO</h1>
+    <p style="text-align:center;">Par Koffi Kouadio - Solution pour PME</p>
 
-    <div class="grid">
-        <div class="box">
-            <h2>📥 ENTRÉE STOCK</h2>
-            <input type="text" id="nomProduit" placeholder="Ex: Coca 33cl">
-            <input type="number" id="qteEntree" placeholder="Quantité reçue">
-            <input type="number" id="prixAchat" placeholder="Prix d'achat unitaire CFA">
-            <input type="number" id="prixVente" placeholder="Prix de vente unitaire CFA">
-            <button class="btn-stock" onclick="ajouterStock()">Ajouter au Stock</button>
-        </div>
-
-        <div class="box">
-            <h2>💰 VENDRE</h2>
-            <select id="produitVente"></select>
-            <input type="number" id="qteVente" placeholder="Quantité vendue">
-            <button class="btn-sell" onclick="vendre()">Enregistrer Vente</button>
-            <div class="total-box">CA du jour : <span id="caTotal" class="ok">0</span> CFA</div>
-            <div class="total-box">Bénéfice du jour : <span id="benefTotal" class="ok">0</span> CFA</div>
-        </div>
+    <div class="card no-print">
+        <h2>📥 ENTRÉE STOCK</h2>
+        <input id="nom" placeholder="Ex: Coca 33cl">
+        <input id="qte" type="number" placeholder="Quantité reçue">
+        <input id="achat" type="number" placeholder="Prix d'achat unitaire CFA">
+        <input id="vente" type="number" placeholder="Prix de vente unitaire CFA">
+        <button class="btn-add" onclick="ajouterStock()">Ajouter au Stock</button>
     </div>
 
-    <div class="box">
-        <h2>📊 ÉTAT DU STOCK</h2>
+    <div class="card no-print">
+        <h2>💰 VENDRE</h2>
+        <select id="produitVente"></select>
+        <input id="qteVente" type="number" placeholder="Quantité vendue">
+        <button class="btn-sell" onclick="vendre()">Enregistrer Vente</button>
+    </div>
+
+    <div class="card" id="zoneImpression">
+        <h2>📊 RÉSUMÉ DU JOUR - <span id="dateJour"></span></h2>
+        <div class="stats">
+            <p>CA du jour : <span id="ca" style="color:#22c55e;">0</span> CFA</p>
+            <p>Bénéfice du jour : <span id="benef" style="color:#22c55e;">0</span> CFA</p>
+        </div>
+        
+        <h2>📦 ÉTAT DU STOCK</h2>
         <table id="tableStock">
-            <tr><th>Produit</th><th>Stock</th><th>Prix Achat</th><th>Prix Vente</th><th>Valeur Stock</th><th>État</th></tr>
+            <tr><th>Produit</th><th>Stock</th><th>Achat</th><th>Vente</th><th>Ajouté le</th></tr>
         </table>
-    </div>
 
-    <div class="box">
-        <h2>🧾 HISTORIQUE VENTES DU JOUR</h2>
+        <h2>🧾 HISTORIQUE DES VENTES</h2>
         <table id="tableVentes">
             <tr><th>Heure</th><th>Produit</th><th>Qté</th><th>Total</th><th>Bénéfice</th></tr>
         </table>
-        <button class="btn-danger" onclick="cloturerJournee()">🗑️ Clôturer la journée</button>
     </div>
 
-    <script>
-        let stock = JSON.parse(localStorage.getItem('stockBoisson')) || [];
-        let ventes = JSON.parse(localStorage.getItem('ventesBoisson')) || [];
-        
-        majAffichage();
+    <div class="card no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimer le Rapport du Jour</button>
+        <button class="btn-reset" onclick="resetJour()">🔄 Clôturer la Journée & Reset</button>
+    </div>
 
-        function ajouterStock() {
-            let nom = document.getElementById('nomProduit').value;
-            let qte = parseInt(document.getElementById('qteEntree').value);
-            let pa = parseInt(document.getElementById('prixAchat').value);
-            let pv = parseInt(document.getElementById('prixVente').value);
-            
-            if(nom && qte > 0 && pa > 0 && pv > 0) {
-                let existant = stock.find(p => p.nom === nom);
-                if(existant) {
-                    existant.qte += qte;
-                    existant.pa = pa; // On met à jour les prix
-                    existant.pv = pv;
-                } else {
-                    stock.push({nom: nom, qte: qte, pa: pa, pv: pv});
-                }
-                localStorage.setItem('stockBoisson', JSON.stringify(stock));
-                majAffichage();
-                document.getElementById('nomProduit').value = '';
-                document.getElementById('qteEntree').value = '';
-                document.getElementById('prixAchat').value = '';
-                document.getElementById('prixVente').value = '';
-            } else {
-                alert('Remplis tous les champs bro !');
-            }
-        }
+<script>
+let stock = JSON.parse(localStorage.getItem('stockLaLiga')) || [];
+let ventes = JSON.parse(localStorage.getItem('ventesLaLiga')) || [];
 
-        function vendre() {
-            let nomProduit = document.getElementById('produitVente').value;
-            let qteVendue = parseInt(document.getElementById('qteVente').value);
-            let produit = stock.find(p => p.nom === nomProduit);
-            
-            if(produit && qteVendue > 0) {
-                if(produit.qte >= qteVendue) {
-                    produit.qte -= qteVendue;
-                    let totalVente = qteVendue * produit.pv;
-                    let benef = qteVendue * (produit.pv - produit.pa);
-                    
-                    ventes.push({
-                        heure: new Date().toLocaleTimeString(),
-                        nom: nomProduit,
-                        qte: qteVendue,
-                        total: totalVente,
-                        benef: benef
-                    });
-                    
-                    localStorage.setItem('stockBoisson', JSON.stringify(stock));
-                    localStorage.setItem('ventesBoisson', JSON.stringify(ventes));
-                    majAffichage();
-                    document.getElementById('qteVente').value = '';
-                } else {
-                    alert(`Stock insuffisant ! Il reste ${produit.qte} ${nomProduit}`);
-                }
-            }
-        }
+function sauvegarder() {
+    localStorage.setItem('stockLaLiga', JSON.stringify(stock));
+    localStorage.setItem('ventesLaLiga', JSON.stringify(ventes));
+}
 
-        function majAffichage() {
-            // MAJ Menu déroulant vente
-            let select = document.getElementById('produitVente');
-            select.innerHTML = '<option value="">-- Choisir un produit --</option>';
-            stock.forEach(p => {
-                select.innerHTML += `<option value="${p.nom}">${p.nom} - Stock: ${p.qte}</option>`;
-            });
+function getDateHeure() {
+    return new Date().toLocaleString('fr-FR');
+}
 
-            // MAJ Tableau Stock
-            let tableStock = document.getElementById('tableStock');
-            tableStock.innerHTML = '<tr><th>Produit</th><th>Stock</th><th>Prix Achat</th><th>Prix Vente</th><th>Valeur Stock</th><th>État</th></tr>';
-            stock.forEach(p => {
-                let etat = p.qte > 5 ? `<span class="ok">OK</span>` : `<span class="alerte">ALERTE</span>`;
-                let valeur = p.qte * p.pa;
-                tableStock.innerHTML += `<tr><td>${p.nom}</td><td>${p.qte}</td><td>${p.pa}</td><td>${p.pv}</td><td>${valeur.toLocaleString()}</td><td>${etat}</td></tr>`;
-            });
+function ajouterStock() {
+    let nom = document.getElementById('nom').value;
+    let qte = parseInt(document.getElementById('qte').value);
+    let achat = parseInt(document.getElementById('achat').value);
+    let vente = parseInt(document.getElementById('vente').value);
+    
+    if (!nom || !qte || !achat || !vente) return alert('Remplis tout bro');
+    
+    let existant = stock.find(p => p.nom === nom);
+    if (existant) {
+        existant.qte += qte;
+        existant.date = getDateHeure(); // Update la date
+    } else {
+        stock.push({ nom, qte, achat, vente, date: getDateHeure() });
+    }
+    
+    document.getElementById('nom').value = '';
+    document.getElementById('qte').value = '';
+    document.getElementById('achat').value = '';
+    document.getElementById('vente').value = '';
+    
+    sauvegarder();
+    afficher();
+}
 
-            // MAJ Tableau Ventes + Totaux
-            let tableVentes = document.getElementById('tableVentes');
-            tableVentes.innerHTML = '<tr><th>Heure</th><th>Produit</th><th>Qté</th><th>Total</th><th>Bénéfice</th></tr>';
-            let ca = 0, benefTotal = 0;
-            ventes.forEach(v => {
-                tableVentes.innerHTML += `<tr><td>${v.heure}</td><td>${v.nom}</td><td>${v.qte}</td><td>${v.total.toLocaleString()}</td><td>${v.benef.toLocaleString()}</td></tr>`;
-                ca += v.total;
-                benefTotal += v.benef;
-            });
-            document.getElementById('caTotal').textContent = ca.toLocaleString();
-            document.getElementById('benefTotal').textContent = benefTotal.toLocaleString();
-        }
+function vendre() {
+    let nom = document.getElementById('produitVente').value;
+    let qte = parseInt(document.getElementById('qteVente').value);
+    let produit = stock.find(p => p.nom === nom);
+    
+    if (!produit || !qte || qte > produit.qte) return alert('Stock insuffisant ou vide');
+    
+    produit.qte -= qte;
+    let totalVente = qte * produit.vente;
+    let benefVente = qte * (produit.vente - produit.achat);
+    
+    ventes.push({
+        heure: getDateHeure(),
+        nom: nom,
+        qte: qte,
+        total: totalVente,
+        benef: benefVente
+    });
+    
+    document.getElementById('qteVente').value = '';
+    sauvegarder();
+    afficher();
+}
 
-        function cloturerJournee() {
-            if(confirm('Clôturer ? Ça va effacer les ventes du jour mais garder le stock.')) {
-                ventes = [];
-                localStorage.setItem('ventesBoisson', JSON.stringify(ventes));
-                majAffichage();
-            }
-        }
-    </script>
+function afficher() {
+    // Date du jour
+    document.getElementById('dateJour').textContent = new Date().toLocaleDateString('fr-FR');
+    
+    // Menu déroulant
+    let select = document.getElementById('produitVente');
+    select.innerHTML = '<option>-- Choisir un produit --</option>';
+    stock.forEach(p => {
+        if(p.qte > 0) select.innerHTML += `<option>${p.nom}</option>`;
+    });
+    
+    // Tableau Stock avec date
+    let tableStock = document.getElementById('tableStock');
+    tableStock.innerHTML = '<tr><th>Produit</th><th>Stock</th><th>Achat</th><th>Vente</th><th>Ajouté le</th></tr>';
+    stock.forEach(p => {
+        tableStock.innerHTML += `<tr><td>${p.nom}</td><td>${p.qte}</td><td>${p.achat}</td><td>${p.vente}</td><td>${p.date}</td></tr>`;
+    });
+    
+    // Tableau Ventes + Calculs
+    let tableVentes = document.getElementById('tableVentes');
+    tableVentes.innerHTML = '<tr><th>Heure</th><th>Produit</th><th>Qté</th><th>Total</th><th>Bénéfice</th></tr>';
+    let caTotal = 0;
+    let benefTotal = 0;
+    ventes.forEach(v => {
+        tableVentes.innerHTML += `<tr><td>${v.heure}</td><td>${v.nom}</td><td>${v.qte}</td><td>${v.total}</td><td>${v.benef}</td></tr>`;
+        caTotal += v.total;
+        benefTotal += v.benef;
+    });
+    
+    document.getElementById('ca').textContent = caTotal.toLocaleString('fr-FR');
+    document.getElementById('benef').textContent = benefTotal.toLocaleString('fr-FR');
+}
+
+function resetJour() {
+    if (confirm('Tu veux clôturer la journée ? Ça va effacer l’historique des ventes mais garder le stock.')) {
+        ventes = [];
+        sauvegarder();
+        afficher();
+    }
+}
+
+// Charge tout au démarrage
+afficher();
+</script>
 </body>
 </html>
