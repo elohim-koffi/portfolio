@@ -1,7 +1,7 @@
 # Salut, moi c’est Elohim Koffi 👋
 
-**Élève en Terminale C, Lycée [Mets le nom de ton lycée], Côte d’Ivoire**  
-**Moyenne classe de 1ère : 14/20**
+**Élève en Terminale D, Lycée Moderne 1 de Toumodi , Côte d’Ivoire**  
+**Moyenne classe de 1ère : 14,6/20**
 
 ## 🎯 Mon objectif 2027
 Obtenir une bourse **Stipendium Hungaricum** ou **CSC Chine** pour étudier l’Intelligence Artificielle et le Génie Logiciel.
