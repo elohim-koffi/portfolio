@@ -5,28 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion Cave La Liga - PRO</title>
     <style>
-        body { font-family: Arial; background: #0f172a; color: white; padding: 20px; max-width: 600px; margin: auto; }
-        h1 { text-align: center; color: #38bdf8; }
-        .card { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: white; padding: 20px; max-width: 600px; margin: auto; }
+        h1 { text-align: center; color: #38bdf8; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .card { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #334155; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; box-sizing: border-box; font-size: 16px; }
+        input, select { background: #334155; color: white; }
         button { font-weight: bold; cursor: pointer; }
-        .btn-add { background: #f59e0b; }
+        .btn-add { background: #f59e0b; color: #000; }
         .btn-sell { background: #3b82f6; }
         .btn-print { background: #10b981; }
-        .btn-reset { background: #ef4444; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #334155; padding: 8px; text-align: center; font-size: 14px; }
-        .stats { font-size: 18px; text-align: center; }
+        .btn-reset { background: #ef4444; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { border: 1px solid #334155; padding: 8px; text-align: center; }
+        th { background: #334155; }
+        .stats { font-size: 18px; text-align: center; line-height: 1.8; }
+        .stats span { font-weight: bold; }
         @media print {
             body { background: white; color: black; }
             .no-print { display: none; }
-            .card { border: 1px solid #000; }
+            .card { border: 1px solid #000; page-break-inside: avoid; }
+            h1 { color: black; }
         }
     </style>
 </head>
 <body>
     <h1>🥤 GESTION CAVE LA LIGA PRO</h1>
-    <p style="text-align:center;">Par Koffi Kouadio - Solution pour PME</p>
+    <p class="subtitle">Par Koffi Kouadio - Solution pour PME</p>
 
     <div class="card no-print">
         <h2>📥 ENTRÉE STOCK</h2>
@@ -39,7 +44,9 @@
 
     <div class="card no-print">
         <h2>💰 VENDRE</h2>
-        <select id="produitVente"></select>
+        <select id="produitVente">
+            <option>-- Choisir un produit --</option>
+        </select>
         <input id="qteVente" type="number" placeholder="Quantité vendue">
         <button class="btn-sell" onclick="vendre()">Enregistrer Vente</button>
     </div>
@@ -81,16 +88,21 @@ function getDateHeure() {
 }
 
 function ajouterStock() {
-    let nom = document.getElementById('nom').value;
+    let nom = document.getElementById('nom').value.trim();
     let qte = parseInt(document.getElementById('qte').value);
     let achat = parseInt(document.getElementById('achat').value);
     let vente = parseInt(document.getElementById('vente').value);
     
-    if (!nom || !qte || !achat || !vente) return alert('Remplis tout bro');
+    if (!nom || !qte || !achat || !vente) {
+        alert('Remplis les 4 cases bro');
+        return;
+    }
     
     let existant = stock.find(p => p.nom === nom);
     if (existant) {
         existant.qte += qte;
+        existant.achat = achat;
+        existant.vente = vente;
         existant.date = getDateHeure();
     } else {
         stock.push({ nom, qte, achat, vente, date: getDateHeure() });
@@ -110,7 +122,18 @@ function vendre() {
     let qte = parseInt(document.getElementById('qteVente').value);
     let produit = stock.find(p => p.nom === nom);
     
-    if (!produit || !qte || qte > produit.qte) return alert('Stock insuffisant ou vide');
+    if (!produit) {
+        alert('Choisis un produit');
+        return;
+    }
+    if (!qte || qte <= 0) {
+        alert('Mets une quantité valide');
+        return;
+    }
+    if (qte > produit.qte) {
+        alert('Stock insuffisant. Il reste ' + produit.qte);
+        return;
+    }
     
     produit.qte -= qte;
     let totalVente = qte * produit.vente;
@@ -148,4 +171,25 @@ function afficher() {
     tableVentes.innerHTML = '<tr><th>Heure</th><th>Produit</th><th>Qté</th><th>Total</th><th>Bénéfice</th></tr>';
     let caTotal = 0;
     let benefTotal = 0;
-    ventes.forEach(v
+    ventes.forEach(v => {
+        tableVentes.innerHTML += `<tr><td>${v.heure}</td><td>${v.nom}</td><td>${v.qte}</td><td>${v.total}</td><td>${v.benef}</td></tr>`;
+        caTotal += v.total;
+        benefTotal += v.benef;
+    });
+    
+    document.getElementById('ca').textContent = caTotal.toLocaleString('fr-FR');
+    document.getElementById('benef').textContent = benefTotal.toLocaleString('fr-FR');
+}
+
+function resetJour() {
+    if (confirm('Tu veux clôturer la journée ? Ça va effacer l’historique des ventes mais garder le stock.')) {
+        ventes = [];
+        sauvegarder();
+        afficher();
+    }
+}
+
+afficher();
+</script>
+</body>
+</html>
