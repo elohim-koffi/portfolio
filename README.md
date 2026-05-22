@@ -1,4 +1,4 @@
-# Salut, moi c’est Elohim Koffi 👋
+# Salut, moi c’est koffi Kouadio Salomon Elohïm 👋
 
 **Élève en Terminale D, Lycée Moderne 1 de Toumodi , Côte d’Ivoire**  
 **Moyenne classe de 1ère : 14,6/20**
